@@ -1,6 +1,8 @@
 import { getMonthlyStats, getUsersList } from '@/app/actions';
 import AnalyticsClient from '@/components/AnalyticsClient';
 
+export const dynamic = 'force-dynamic';
+
 export default async function AnalyticsPage({
     searchParams,
 }: {
