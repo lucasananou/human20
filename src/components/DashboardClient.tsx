@@ -46,6 +46,8 @@ export default function DashboardClient({ initialUser, allUsers }: DashboardClie
         }
     }, [user?.level, prevLevel]);
 
+    const [isReviewing, setIsReviewing] = useState(false);
+
     // Get today's log - Robust Comparison
     const today = new Date().toISOString().split('T')[0];
     const todaysLog = user?.logs?.find((l: any) => {
@@ -220,19 +222,50 @@ export default function DashboardClient({ initialUser, allUsers }: DashboardClie
                             </div>
                         </div>
 
-                        {/* Habits List */}
+
+                        {/* Habits List or Success Message */}
                         <div>
                             <h3 className="text-sm font-medium text-zinc-500 uppercase tracking-widest mb-4">Objectifs Quotidiens</h3>
-                            <div className="space-y-3">
-                                {habitsData.map(habit => (
-                                    <HabitCard
-                                        key={habit.id}
-                                        {...habit}
-                                        checked={localCompleted.includes(habit.id)}
-                                        onToggle={() => handleToggle(habit.id)}
-                                    />
-                                ))}
-                            </div>
+
+                            {percentage === 100 && !isReviewing ? (
+                                <div className="glass-card rounded-xl p-8 border border-emerald-500/30 flex flex-col items-center text-center relative overflow-hidden">
+                                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-teal-400"></div>
+                                    <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-4">
+                                        <Medal size={32} />
+                                    </div>
+                                    <h3 className="text-xl font-bold text-white mb-2">Immense Victoire !</h3>
+                                    <p className="text-zinc-300 mb-6">
+                                        Bravo, tu peux te reposer, les hunger games recommencent demain.
+                                    </p>
+                                    <button
+                                        onClick={() => setIsReviewing(true)}
+                                        className="text-xs text-zinc-500 hover:text-white underline transition-colors"
+                                    >
+                                        Modifier / Voir le récapitulatif
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="space-y-3">
+                                    {habitsData.map(habit => (
+                                        <HabitCard
+                                            key={habit.id}
+                                            {...habit}
+                                            checked={localCompleted.includes(habit.id)}
+                                            onToggle={() => handleToggle(habit.id)}
+                                        />
+                                    ))}
+                                    {percentage === 100 && isReviewing && (
+                                        <div className="mt-4 text-center">
+                                            <button
+                                                onClick={() => setIsReviewing(false)}
+                                                className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
+                                            >
+                                                Masquer la liste
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </div>
 
