@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  level     Int      @default(1)
+  currency  Int      @default(0) // Points to spend (e.g. on Jokers)
+  jokers    Int      @default(0) // Streak freezes stored
+  logs      DailyLog[]
+}
+
+model DailyLog {
+  id          Int      @id @default(autoincrement())
+  date        DateTime @default(now())
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  sport       Boolean  @default(false)
+  nutrition   Boolean  @default(false)
+  reading     Boolean  @default(false)
+  work        Boolean  @default(false)
+  meditation  Boolean  @default(false)
+  mood        Int?
+  @@unique([userId, date])
+}
